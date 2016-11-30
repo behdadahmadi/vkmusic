@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #By Behdad Ahmadi
+#Bugs fixed by Mr.Oplus
 #Scripted in Python for easy use.
 #It first logins to VK.com,then search for music and return links'
 #Notice: YOU MUST HAVE A VK.COM ACCOUNT
