@@ -3,6 +3,10 @@ VK social network audio song searcher and downloader
 
 vkDownloader is written in Python for easy use.
 
+Supported on Windows,macOS and Linux distros.
+
+Windows support by https://github.com/MrOplus
+
 Python requirements:
 
     BeautifulSoup4
