@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #By Behdad Ahmadi
 #Scripted in Python for easy use.
 #It first logins to VK.com,then search for music and return links'
@@ -10,6 +11,8 @@ import urllib
 from bs4 import BeautifulSoup as bs
 import sys
 import os
+import argparse
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -24,22 +27,21 @@ def dlProgress(count, blockSize, totalSize):
     sys.stdout.write("\r%2d%%" % percent)
     sys.stdout.flush()
 
-
     if percent == 100:
-
         print grayColor + '  Successfully downloaded\n'
+
 def downloadSong(songLink,title):
     dl_path = os.getcwd()+'/Music/'
-    if not os.path.exists('Music'):
-        os.mkdir('Music')
-    if not os.path.exists(dl_path + title[0:60] + '.mp3'):
+    dl_path = os.path.normpath(dl_path)
+    if not os.path.exists(dl_path):
+        os.makedirs(dl_path)
+    musicPath = dl_path + "/" +title[0:60] + '.mp3'
+    musicPath = os.path.normpath(musicPath)
+    if not os.path.exists(musicPath):
         print 'Downloading {0}'.format(title)
-        urllib.urlretrieve(songLink.split('?')[0],dl_path + title[0:60] + '.mp3',dlProgress)
-
+        urllib.urlretrieve(songLink.split('?')[0],musicPath,dlProgress)
     else:
         print '{0} is already downloaded'.format(title)
-def usage():
-    print 'Usage: vkdownloader.py USERNAME PASSWORD SONG'
 def banner():
     dotname = "-" * 18
     print " "
@@ -58,7 +60,7 @@ def search(text,cred):
     }
     _session = requests.Session()
     login_page = _session.get('https://m.vk.com/login')
-    login_url = bs(login_page.content,'lxml').find('form')['action']
+    login_url = bs(login_page.content,'html.parser').find('form')['action']
     _session.post(login_url,data=payload,headers=headers)
 
     search_query = 'https://m.vk.com/audio?act=search&q=' + text
@@ -66,7 +68,7 @@ def search(text,cred):
     if 'Not registered' in search_page.content:
         print 'Authenication error : Credentials are incorrect'
         sys.exit()
-    items = bs(search_page.content,'lxml').find_all('div',attrs={'class':'audio_item ai_has_btn'})
+    items = bs(search_page.content,'html.parser').find_all('div',attrs={'class':'audio_item ai_has_btn'})
     labels = []
     for item in items:
         label = item.find('div',attrs={'class':'ai_label'})('span')
@@ -77,19 +79,16 @@ def search(text,cred):
     return result
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("username", help="your VK Username")
+    parser.add_argument("password", help="your VK Password")
+    parser.add_argument("song", help="Song Name")
+    args = parser.parse_args()
     banner()
 
-    if len(sys.argv) < 4:
-        usage()
-        sys.exit()
-
-    else:
-
-        username = sys.argv[1]
-        password = sys.argv[2]
-        query = sys.argv[3]
-        if not username or not password:
-            sys.exit()
+    username = args.username
+    password = args.password
+    query = args.song
 
     result = search(query,[username,password])
     print "{0} songs has been found".format(str(result[0]))
