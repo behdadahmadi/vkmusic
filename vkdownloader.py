@@ -1,10 +1,12 @@
 #!/usr/bin/python
 #By Behdad Ahmadi
-#Bugs fixed by Mr.Oplus
+#Bugs fixing and improvement by Mr.Oplus
 #Scripted in Python for easy use.
 #It first logins to VK.com,then search for music and return links'
 #Notice: YOU MUST HAVE A VK.COM ACCOUNT
-#Twitter: behdadahmadi@mail.com
+#Twitter: behdadahmadi & MrOplus
+#https://logicalcoders.com
+
 
 
 import requests
